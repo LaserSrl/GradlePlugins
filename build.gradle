@@ -1,0 +1,35 @@
+buildscript {
+    ext.coreMavenVersion = "1.0.2"
+    ext.apkNameGeneratorMavenVersion = "1.2.3"
+    ext.apkPublisherMavenVersion = "1.0.6"
+    ext.proguardZipGeneratorVersion = "1.2.2"
+
+    ext.androidPublisherVersion = "v3-rev38-1.25.0"
+
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath ("com.google.apis:google-api-services-androidpublisher:$androidPublisherVersion") {
+            exclude group: 'com.google.guava'
+        }
+
+        classpath "jcifs:jcifs:1.3.17"
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

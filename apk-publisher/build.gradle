@@ -1,0 +1,15 @@
+apply plugin: 'groovy'
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+
+    implementation project(':core')
+
+    implementation("com.google.apis:google-api-services-androidpublisher:$androidPublisherVersion") {
+        exclude group: 'com.google.guava'
+    }
+
+    implementation "jcifs:jcifs:1.3.17"
+}
+apply from: "../gradle/scripts/gradle-mvn-push.gradle"

@@ -1,0 +1,63 @@
+# OSX files
+.DS_Store
+
+# Gradle Files
+.gradle
+.m2
+.gradletasknamecache
+
+# Build output directories and files
+target/
+build/
+Version.java
+logcat.txt
+
+# Eclipse specific files/directories
+.classpath
+.project
+.settings
+.metadata
+bin/
+
+# IntelliJ specific files/directories
+out
+.idea
+*.ipr
+*.iws
+*.iml
+local.properties
+
+# crashlytics files
+com_crashlytics_export_strings.xml
+crashlytics_local_developer_strings.xml
+manifest.txt
+crashlytics.keystore.properties
+crashlytics-build.properties
+
+*.log
+
+# Xcode
+
+## Build generated
+DerivedData/
+
+## Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+
+## Other
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
+*.li
+projectFilesBackup/
+.externalNativeBuild
+sample/proguardZip

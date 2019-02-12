@@ -1,0 +1,84 @@
+apply plugin: 'signing'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = GROUP
+version = VERSION_NAME
+
+afterEvaluate { project ->
+    install {
+        repositories.mavenInstaller {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            pom.project {
+                //noinspection GroovyAssignabilityCheck
+                name POM_NAME
+                //noinspection GroovyAssignabilityCheck
+                packaging POM_PACKAGING
+                //noinspection GroovyAssignabilityCheck
+                description POM_DESCRIPTION
+
+                licenses {
+                    license {
+                        //noinspection GroovyAssignabilityCheck
+                        name POM_LICENCE_NAME
+                        url POM_LICENCE_URL
+                        //noinspection GroovyAssignabilityCheck
+                        distribution POM_LICENCE_DIST
+                    }
+                }
+
+                developers {
+                    developer {
+                        id POM_DEVELOPER_ID_1
+                        //noinspection GroovyAssignabilityCheck
+                        name POM_DEVELOPER_NAME_1
+                    }
+
+                    developer {
+                        id POM_DEVELOPER_ID_2
+                        //noinspection GroovyAssignabilityCheck
+                        name POM_DEVELOPER_NAME_2
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        required {
+            !VERSION_NAME.contains("SNAPSHOT") && gradle.taskGraph.hasTask("uploadArchives")
+        }
+        //noinspection GroovyAssignabilityCheck
+        sign configurations.archives
+    }
+
+    sourceSets {
+        main {
+            groovy {
+                // override the default locations, rather than adding additional ones
+                srcDirs = ['src/main/groovy', 'src/main/java']
+            }
+            java {
+                // don't compile Java code twice
+                srcDirs = []
+            }
+        }
+    }
+
+    //noinspection GroovyAssignabilityCheck
+    task groovyDoc(type: Groovydoc) {
+        source = sourceSets.main.groovy.srcDirs
+        classpath = sourceSets.main.output + sourceSets.main.compileClasspath
+    }
+
+    //noinspection GroovyAssignabilityCheck
+    task groovyDocJar(type: Jar, dependsOn: groovyDoc) {
+        classifier = 'groovydoc'
+        //noinspection GroovyAccessibility
+        from groovyDoc.destinationDir
+    }
+
+    artifacts {
+        archives groovyDocJar
+    }
+}

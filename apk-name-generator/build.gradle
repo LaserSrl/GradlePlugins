@@ -1,0 +1,9 @@
+apply plugin: 'groovy'
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+
+    implementation project(':core')
+}
+apply from: "../gradle/scripts/gradle-mvn-push.gradle"

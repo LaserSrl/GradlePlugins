@@ -1,0 +1,16 @@
+apply plugin: 'groovy'
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+
+    implementation project(':apk-name-generator')
+    implementation project(':apk-publisher')
+    implementation project(':proguard-zip-generator')
+}
+apply from: "../gradle/scripts/gradle-mvn-push.gradle"

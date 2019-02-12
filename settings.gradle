@@ -1,0 +1,7 @@
+include ':apk-name-generator'
+include ':apk-publisher'
+include ':core'
+include ':krake'
+include ':proguard-zip-generator'
+//include ':app'
+//include ':sample'
