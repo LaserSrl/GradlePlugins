@@ -9,6 +9,7 @@ dependencies {
     implementation gradleApi()
     implementation localGroovy()
 
+    implementation project(':core')
     implementation project(':apk-name-generator')
     implementation project(':apk-publisher')
     implementation project(':proguard-zip-generator')
