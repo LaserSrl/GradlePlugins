@@ -59,7 +59,7 @@ class StoreVariant extends PublishTarget {
         if (publishChangeLog) {
             params.changeLogs.each {
                 if (it.value == null || it.value.trim().isEmpty())
-                    throw GradleException("the changeLog file must contain only valid string, the locale '$locale' is not valid.")
+                    throw GradleException("the changeLog file must contain only valid string, the language '${it.key}' is not valid.")
 
                 if (it.value.length() > 500)
                     throw new GradleException("for the language ${it.key} the changelog must be lower than $CHANGE_LOGS_LENGTH_LIMIT chars")

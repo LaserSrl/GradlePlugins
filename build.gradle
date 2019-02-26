@@ -1,9 +1,4 @@
 buildscript {
-    ext.coreMavenVersion = "1.0.2"
-    ext.apkNameGeneratorMavenVersion = "1.2.3"
-    ext.apkPublisherMavenVersion = "1.0.6"
-    ext.proguardZipGeneratorVersion = "1.2.2"
-
     ext.androidPublisherVersion = "v3-rev38-1.25.0"
 
     repositories {
