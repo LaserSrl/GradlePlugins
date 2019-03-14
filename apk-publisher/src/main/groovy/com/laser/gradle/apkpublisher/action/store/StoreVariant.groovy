@@ -34,14 +34,6 @@ class StoreVariant extends PublishTarget {
      */
     VersionTrack track
 
-    /**
-     * The Google Play Developer API does not allow us to publish a beta version
-     * if there is an alpha version with a lower version code. If you want to publish
-     * to higher track and automatically disable conflicting APKs from a lower track,
-     * this can be specified by setting this property to true
-     */
-    boolean unTrackOld = false
-
     StoreVariant(String name, Project project) {
         super(name, project)
     }
@@ -115,27 +107,6 @@ class StoreVariant extends PublishTarget {
         def apk = edits.apks()
                 .upload(variant.applicationId, editId, apkFile)
                 .execute()
-
-        //if the configuration has unTrackOld then untrack the old versions of the minor tracks
-        if (unTrackOld && track != VersionTrack.ALPHA) {
-            def untrackChannels = track == VersionTrack.BETA ? [VersionTrack.ALPHA] : [VersionTrack.ALPHA, VersionTrack.BETA]
-            untrackChannels.each { channel ->
-                try {
-                    def trackName = channel.convertToApiTrackName()
-                    def track = edits.tracks().get(variant.applicationId, editId, trackName).execute()
-                    track.setVersionCodes(track.getVersionCodes().findAll {
-                        it > apk.getVersionCode()
-                    })
-
-                    edits.tracks().update(variant.applicationId, editId, trackName, track).execute()
-                } catch (GoogleJsonResponseException e) {
-                    // Just skip if there is no version in track
-                    if (e.details.getCode() != 404) {
-                        throw e
-                    }
-                }
-            }
-        }
 
         //upload the track for the the apk uploaded with the track specified by the user
         //and set change logs

@@ -222,7 +222,7 @@ apkPublisher {
 		        //the changeLogs are taken from 'publishApk/changeLogs/alpha'
 		        alpha {
 		            //specifies the local path of the json file used from the plugin for the upload with the google api 
-    			    keyFilePath PUBLISH_JSON_FILE
+    			    keyFilePath = PUBLISH_JSON_FILE
 		            version = 'ALPHA'
 		            publishChangeLog = true
 		            versionChangeLogPath = 'alpha'
@@ -231,9 +231,8 @@ apkPublisher {
 		        //the changeLogs are taken from 'publishApk/changeLogs/beta'
 		        beta {
 		            //specifies the local path of the json file used from the plugin for the upload with the google api 
-    			    keyFilePath PUBLISH_JSON_FILE
+    			    keyFilePath = PUBLISH_JSON_FILE
 		            version = 'BETA'
-		            unTrackOld = true
 		            publishChangeLog = true
 		            versionChangeLogPath = 'beta'
 		        }
@@ -242,9 +241,8 @@ apkPublisher {
 		        //the changeLogs are taken from 'publishApk/changeLogs/production'
 		        production {
 		            //specifies the local path of the json file used from the plugin for the upload with the google api 
-    			    keyFilePath PUBLISH_JSON_FILE
+    			    keyFilePath = PUBLISH_JSON_FILE
 		            version = 'PRODUCTION'
-		            unTrackOld = true
 		            publishChangeLog = true
 		            versionChangeLogPath = 'production'
 		        }
@@ -301,11 +299,6 @@ track
 type: VersionTrack
 Version Track that will be used for set the correct track for the publication possible values: ALPHA, BETA, PRODUCTION
 ```
-```
-unTrackOld
-type: Boolean
-The Google Play Developer API does not allow us to publish a beta version if there is an alpha version with a lower version code. If you want to publish to higher track and automatically disable conflicting APKs from a lower track, this can be specified by setting this property to true
-```
 
 default targets:
 ```
@@ -322,7 +315,6 @@ alpha {
 beta {
     keyFilePath PUBLISH_JSON_FILE
     version = 'BETA'
-    unTrackOld = true
     publishChangeLog = true
     versionChangeLogPath = 'beta'
 }
@@ -333,7 +325,6 @@ beta {
 production {
     keyFilePath PUBLISH_JSON_FILE
     version = 'PRODUCTION'
-    unTrackOld = true
     publishChangeLog = true
     versionChangeLogPath = 'production'
 }

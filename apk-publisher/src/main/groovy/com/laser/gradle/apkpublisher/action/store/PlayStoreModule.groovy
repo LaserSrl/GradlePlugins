@@ -39,17 +39,14 @@ class PlayStoreModule implements PublishModule {
         StoreVariant alpha = new StoreVariant("alpha", project)
         alpha.track = VersionTrack.ALPHA
         alpha.keyFilePath = keyFilePath
-        alpha.unTrackOld = true
 
         StoreVariant beta = new StoreVariant("beta", project)
         beta.track = VersionTrack.BETA
         beta.keyFilePath = keyFilePath
-        beta.unTrackOld = true
 
         StoreVariant production = new StoreVariant("production", project)
         production.track = VersionTrack.PRODUCTION
         production.keyFilePath = keyFilePath
-        production.unTrackOld = true
 
         initialVariants.addAll(alpha, beta, production)
         return initialVariants
