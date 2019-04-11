@@ -1,17 +1,19 @@
 package com.laser.gradle.apkpublisher.action.store
 
-import org.gradle.api.GradleException
-
 /**
  * enum with the possible tracks for the publication
  */
 enum VersionTrack {
+    INTERNAL,
     ALPHA,
     BETA,
     PRODUCTION
 
     String convertToApiTrackName() {
         switch (this) {
+            case INTERNAL:
+                return "internal"
+                break
             case ALPHA:
                 return "alpha"
                 break

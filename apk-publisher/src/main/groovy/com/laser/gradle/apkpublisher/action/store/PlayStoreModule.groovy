@@ -36,6 +36,10 @@ class PlayStoreModule implements PublishModule {
 
         List<PublishTarget> initialVariants = new ArrayList<>()
 
+        StoreVariant internal = new StoreVariant("internal", project)
+        internal.track = VersionTrack.INTERNAL
+        internal.keyFilePath = keyFilePath
+
         StoreVariant alpha = new StoreVariant("alpha", project)
         alpha.track = VersionTrack.ALPHA
         alpha.keyFilePath = keyFilePath
@@ -48,7 +52,7 @@ class PlayStoreModule implements PublishModule {
         production.track = VersionTrack.PRODUCTION
         production.keyFilePath = keyFilePath
 
-        initialVariants.addAll(alpha, beta, production)
+        initialVariants.addAll(alpha, beta, production, internal)
         return initialVariants
     }
 }

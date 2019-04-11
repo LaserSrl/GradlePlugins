@@ -15,4 +15,9 @@ class PublishParams {
      * map of changelogs, with the language as key
      */
     Map<String, String> changeLogs
+
+    /**
+     * file to be published
+     */
+    PublishFile file
 }

@@ -7,6 +7,7 @@ import com.google.api.services.androidpublisher.AndroidPublisher.Edits
 import com.google.api.services.androidpublisher.model.LocalizedText
 import com.google.api.services.androidpublisher.model.Track
 import com.google.api.services.androidpublisher.model.TrackRelease
+import com.laser.gradle.apkpublisher.core.PublishFile
 import com.laser.gradle.apkpublisher.core.PublishParams
 import com.laser.gradle.apkpublisher.core.PublishTarget
 import org.gradle.api.GradleException
@@ -17,6 +18,8 @@ import org.gradle.api.Project
  */
 class StoreVariant extends PublishTarget {
     private static MIME_TYPE_APK = 'application/vnd.android.package-archive'
+    private static MIME_TYPE_STREAM = 'application/octet-stream'
+
     private static CHANGE_LOGS_LENGTH_LIMIT = 500
     private AndroidPublisher service
     private Object variant
@@ -42,7 +45,7 @@ class StoreVariant extends PublishTarget {
     boolean canPublish(PublishParams params) {
         //check if the keyFilePath is not null
         if (keyFilePath == null || keyFilePath.trim().isEmpty())
-            throw new GradleException("keyFilePath must be specified, probably the property $PUBLISH_FILE_PROP_NAME is not configured in the gradle.properties, please ask to administrators the json file for the publication and set the path in this property.")
+            throw new GradleException("keyFilePath must be specified, probably the property PUBLISH_JSON_FILE is not configured in the gradle.properties, please ask to administrators the json file for the publication and set the path in this property.")
 
         if (track == null)
             throw new GradleException("track must be specified.")
@@ -83,10 +86,15 @@ class StoreVariant extends PublishTarget {
         //open an edit for publish the apk
         String editId = openEdit(edits)
 
-        //publish the apk
-        variant.outputs
-                .each { variantOutput ->
-            publishApk(edits, editId, new FileContent(MIME_TYPE_APK, variantOutput.outputFile))
+        //publish the file
+        def fileToPublish = params.file.publishFile
+        switch (fileToPublish.fileType) {
+            case PublishFile.FileType.APP_BUNDLE:
+                publishAppBundle(edits, editId, new FileContent(MIME_TYPE_STREAM, fileToPublish))
+                break
+            case PublishFile.FileType.APK:
+                publishApk(edits, editId, new FileContent(MIME_TYPE_APK, fileToPublish))
+                break
         }
 
         //finally commit the edit
@@ -102,19 +110,32 @@ class StoreVariant extends PublishTarget {
      * @param editId edit key in String format used for upload this apk
      * @param apkFile apk file to upload
      */
-    private def publishApk(Edits edits, editId, apkFile) {
+    private def publishApk(Edits edits, editId, file) {
         //upload the apk
         def apk = edits.apks()
-                .upload(variant.applicationId, editId, apkFile)
+                .upload(variant.applicationId, editId, file)
                 .execute()
 
+        continuePublish(edits, editId, apk)
+    }
+
+    private def publishAppBundle(Edits edits, editId, file) {
+        //upload the app bundle
+        def appBundle = edits.bundles()
+                .upload(variant.applicationId, editId, file)
+                .execute()
+
+        continuePublish(edits, editId, appBundle)
+    }
+
+    private def continuePublish(Edits edits, editId, file) {
         //upload the track for the the apk uploaded with the track specified by the user
         //and set change logs
         def uploadTrack = new Track()
         uploadTrack.setTrack(track.convertToApiTrackName())
         def trackRelease = new TrackRelease()
                 .setStatus("completed")
-                .setVersionCodes(Collections.singletonList(apk.getVersionCode()))
+                .setVersionCodes(Collections.singletonList(file.getVersionCode()))
 
         if (publishChangeLog) {
             //set the changelog for the apk
@@ -141,10 +162,8 @@ class StoreVariant extends PublishTarget {
         // upload proguard file if available
         if (variant.mappingFile?.exists()) {
             def fileStream = new FileContent('application/octet-stream', variant.mappingFile)
-            edits.deobfuscationfiles().upload(variant.applicationId, editId, apk.getVersionCode(), 'proguard', fileStream).execute()
+            edits.deobfuscationfiles().upload(variant.applicationId, editId, file.getVersionCode(), 'proguard', fileStream).execute()
         }
-
-        return apk
     }
 
     /**

@@ -85,7 +85,7 @@ class SmbVariant extends PublishTarget {
      */
     @Override
     void publish(PublishParams params) {
-        File apk = (File)params.variant.outputs[0].outputFile
+        File apk = params.file.publishFile
 
         NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(domain, username, password)
 

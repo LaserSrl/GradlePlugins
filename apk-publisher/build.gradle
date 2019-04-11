@@ -11,5 +11,7 @@ dependencies {
     }
 
     implementation "jcifs:jcifs:1.3.17"
+
+    compileOnly("com.android.tools.build:gradle:3.5.0-alpha09")
 }
 apply from: "../gradle/scripts/gradle-mvn-push.gradle"

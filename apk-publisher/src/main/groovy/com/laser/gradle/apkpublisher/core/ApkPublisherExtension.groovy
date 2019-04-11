@@ -17,6 +17,11 @@ class ApkPublisherExtension {
     String versionsFilePath
 
     /**
+     * publish the app bundle, if is set to false, the apk will be published
+     */
+    Boolean publishAppBundle
+
+    /**
      * configs that contains all the {@link PublishModuleExtension} for each {@link PublishModule}
      */
     NamedDomainObjectContainer<PublishModuleExtension> configs
@@ -25,8 +30,9 @@ class ApkPublisherExtension {
 
     private Factory factory
 
-    ApkPublisherExtension(Project project, List<String> modules, String versionsFilePath) {
+    ApkPublisherExtension(Project project, List<String> modules, String versionsFilePath, Boolean publishAppBundle) {
         this.versionsFilePath = versionsFilePath
+        this.publishAppBundle = publishAppBundle
         this.project = project
         this.factory = new Factory(project)
         setModules(modules)

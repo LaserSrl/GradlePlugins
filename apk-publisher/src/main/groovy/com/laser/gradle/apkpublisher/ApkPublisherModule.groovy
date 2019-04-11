@@ -1,6 +1,7 @@
 package com.laser.gradle.apkpublisher
 
 import com.laser.gradle.apkpublisher.core.ApkPublisherExtension
+import com.laser.gradle.apkpublisher.core.PublishFile
 import com.laser.gradle.apkpublisher.core.PublishParams
 import com.laser.gradle.apkpublisher.core.PublishTarget
 import com.laser.gradle.core.extension.ExtensionConfigurator
@@ -11,6 +12,7 @@ import groovy.json.JsonSlurper
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
+import com.android.build.gradle.internal.scope.InternalArtifactType
 
 /**
  * module for the publication of an apk for each variant in release Build Type
@@ -30,12 +32,13 @@ class ApkPublisherModule extends VariantModule<ApkPublisherExtension> {
     ExtensionConfigurator getExtensionConfigurator(Project project) {
         //specify the default publish modules and the versionsFilePath
         String versionsFilePath = "config.json"
+        Boolean publishAppBundle = false
 
         List<String> modules = new ArrayList<>()
         modules.add("com.laser.gradle.apkpublisher.action.store.PlayStoreModule")
         modules.add("com.laser.gradle.apkpublisher.action.smb.SmbModule")
 
-        return new ExtensionConfigurator("apkPublisher", ApkPublisherExtension, project, modules, versionsFilePath)
+        return new ExtensionConfigurator("apkPublisher", ApkPublisherExtension, project, modules, versionsFilePath, publishAppBundle)
     }
 
     /**
@@ -81,11 +84,26 @@ class ApkPublisherModule extends VariantModule<ApkPublisherExtension> {
                     .name(publishTaskName)
                     .action {
                         doLast {
+                            def file = new PublishFile()
+                            if (publishApkExtension.publishAppBundle) {
+                                file.fileType = PublishFile.FileType.APP_BUNDLE
+                                file.publishFile = variant.getFinalArtifact(InternalArtifactType.BUNDLE).files[0]
+                            } else {
+                                file.fileType = PublishFile.FileType.APK
+                                file.publishFile = variant.outputs[0].outputFile
+                            }
+                            params.file = file
                             currentPublishTarget.publish(params)
                         }
                     }.build()
 
-            publishApkTask.dependsOn variant.assemble
+            def dependencyTask
+            if (publishApkExtension.publishAppBundle) {
+                dependencyTask = project.tasks["bundle${variantName}"]
+            } else {
+                dependencyTask = variant.assembleProvider
+            }
+            publishApkTask.dependsOn dependencyTask
 
             def preTaskName = "checkBeforePublish${variantName}"
             def preTask = new TaskBuilder(project)
