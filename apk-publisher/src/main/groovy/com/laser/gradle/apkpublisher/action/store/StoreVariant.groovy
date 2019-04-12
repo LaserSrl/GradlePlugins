@@ -87,13 +87,13 @@ class StoreVariant extends PublishTarget {
         String editId = openEdit(edits)
 
         //publish the file
-        def fileToPublish = params.file.publishFile
+        def fileToPublish = params.file
         switch (fileToPublish.fileType) {
             case PublishFile.FileType.APP_BUNDLE:
-                publishAppBundle(edits, editId, new FileContent(MIME_TYPE_STREAM, fileToPublish))
+                publishAppBundle(edits, editId, new FileContent(MIME_TYPE_STREAM, fileToPublish.publishFile))
                 break
             case PublishFile.FileType.APK:
-                publishApk(edits, editId, new FileContent(MIME_TYPE_APK, fileToPublish))
+                publishApk(edits, editId, new FileContent(MIME_TYPE_APK, fileToPublish.publishFile))
                 break
         }
 
