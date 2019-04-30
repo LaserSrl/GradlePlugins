@@ -197,6 +197,7 @@ The steps are:
 Publish Module supported:
 - [PlayStore Module](#PlayStoreModule): PlayStoreModule
 - [Smb Module](#SmbModule): SmbModule
+- [Ftp Module](#FtpModule): FtpModule
 - [Custom publish module](#CustomPublishModule): ..or you can create a custom module
 
 The task generated will be in this format: publishApk + FlavorName + BuildType
@@ -391,6 +392,78 @@ example of target
 ```
 server1 {
     destinationPath = "127.0.0.1/D\$/www/testPublish"
+    username = testUsername
+    password = testPassword
+    backupFile = true
+    apkName = "testapk.apk"
+    jsonFileName = "test-apk-json.json"
+    downloadApkUrl = "https://testurl.com/testPublish/testapk.apk"
+}
+```
+
+#### FtpModule ####
+Publish module compatible with ftp protocol.
+
+extension name: **ftp**
+
+Target params:
+
+```
+server
+type: String
+Domain used for authentication
+
+port
+type: Int
+Domain used for authentication
+
+username 
+type: String 
+Username used for authentication
+
+password 
+type: String 
+Password used for authentication
+
+destinationPath 
+type: String 
+destination in which the apk will be copied:
+for example: 127.0.0.1/d$/test/publishFolder
+
+apkName 
+type: String 
+Name of the apk copied in the destination, if is null then will used the apk original name.
+
+backupFile 
+type: Boolean 
+possibility to create the copy of the existent apk in the same folder with bck_ as prefix
+
+jsonFilePath 
+type: String 
+the json format is: {"v":versionCode,"u":downloadApkUrl} path in which the json for the version will be created @default destinationPath.
+
+jsonFileName 
+type: String 
+Name of the json file. @default "version.json".
+
+downloadApkUrl 
+type: String 
+Url that will be set in the json.
+```
+
+default targets: **nothing**
+
+Steps:
+- Create a backup of the file if exists and if the BackupFile flag is true.
+- Copy the new file in the destinationPath with the apkName specified (if null the original name)
+- Create the json with the format: {"v":versionCode,"u":downloadApkUrl}
+
+example of target
+```
+server1 {
+    server = "127.0.0.1"
+    port = 21
+    destinationPath = "www/testPublish"
     username = testUsername
     password = testPassword
     backupFile = true
