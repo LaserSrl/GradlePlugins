@@ -37,6 +37,7 @@ class ApkPublisherModule extends VariantModule<ApkPublisherExtension> {
         List<String> modules = new ArrayList<>()
         modules.add("com.laser.gradle.apkpublisher.action.store.PlayStoreModule")
         modules.add("com.laser.gradle.apkpublisher.action.smb.SmbModule")
+        modules.add("com.laser.gradle.apkpublisher.action.ftp.FtpModule")
 
         return new ExtensionConfigurator("apkPublisher", ApkPublisherExtension, project, modules, versionsFilePath, publishAppBundle)
     }
